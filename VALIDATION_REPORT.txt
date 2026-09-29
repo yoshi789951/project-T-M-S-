@@ -1,0 +1,60 @@
+TaskFlow Perfect Project — validation report
+================================================
+Checks: 42 | Passed: 42 | Failed: 0
+
+[PASS] frontend package.json parses
+[PASS] realtime package.json parses
+[PASS] Postman collection parses
+[PASS] docker-compose.yml parses
+[PASS] backend pom.xml parses
+[PASS] frontend relative imports resolve
+[PASS] backend controller group /api/auth
+[PASS] backend controller group /api/projects
+[PASS] backend controller group /api/tasks
+[PASS] backend controller group /api/tags
+[PASS] backend controller group /api/plans
+[PASS] backend controller group /api/reminders
+[PASS] backend controller group /api/dashboard
+[PASS] backend controller group /api/users
+[PASS] backend controller group /api/admin/users
+[PASS] plan item API mapped
+[PASS] task activity API mapped
+[PASS] one canonical standalone SQL file — task_manager_full.sql
+[PASS] all 12 database tables present — found=['activity_logs', 'comments', 'plan_items', 'plans', 'projects', 'reminder_delivery_log', 'reminders', 'tags', 'task_meta', 'task_tags', 'tasks', 'users']
+[PASS] database name task_manager
+[PASS] no repeated CREATE TABLE in full SQL
+[PASS] no stale duplicate schema filename references
+[PASS] SET NULL foreign keys use nullable columns
+[PASS] Flyway migrations are V1 + V2 only — ['V1__create_taskflow_schema.sql', 'V2__planning_reminders_activity_tags.sql']
+[PASS] Hibernate validates schema
+[PASS] Flyway baseline protects manual full import
+[PASS] reminder scheduler configured
+[PASS] JWT API is stateless
+[PASS] public endpoints restricted to signup/signin
+[PASS] admin APIs role protected
+[PASS] public signup fixed to USER role
+[PASS] signin updates lastLogin
+[PASS] JPA model ActivityLog
+[PASS] JPA model Tag
+[PASS] JPA model TaskMeta
+[PASS] JPA model Plan
+[PASS] JPA model PlanItem
+[PASS] JPA model Reminder
+[PASS] JPA model ReminderDeliveryLog
+[PASS] realtime server JS syntax
+[PASS] Postman has no /api/api duplication
+[PASS] npm dependency versions pinned
+
+Runtime limitation: external package downloads are blocked in this preparation environment, so a complete npm/Maven dependency build could not be executed here. Run `docker compose up --build`, `mvn test`, and `npm run build` on a networked machine.
+
+Additional parser/cleanup verification
+--------------------------------------
+[PASS] Java source parser: 88 files, 0 parse errors
+[PASS] React JSX parser: 21 files, 0 parse errors
+[PASS] Plain JavaScript syntax: frontend APIs/store/config + realtime service, 0 errors
+[PASS] CSS parser: frontend/src/styles.css, 0 parse errors
+[PASS] Exact duplicate file scan: 0 duplicate file groups
+[PASS] Canonical SQL scan: one standalone SQL file; 12 unique CREATE TABLE statements
+[PASS] Exact stale standalone-schema references: 0
+
+Note: CSS selectors intentionally repeat inside responsive @media rules and final cascade overrides; these are required responsive behavior, not duplicate files or repeated database/application logic.

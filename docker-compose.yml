@@ -1,0 +1,79 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: task_manager
+      MYSQL_USER: taskflow
+      MYSQL_PASSWORD: taskflowpass
+      MYSQL_ROOT_PASSWORD: taskflowroot
+    ports:
+      - "3306:3306"
+    volumes:
+      - taskflow_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ptaskflowroot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build: ./backend
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/task_manager?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USERNAME: taskflow
+      DB_PASSWORD: taskflowpass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: taskflow-dev-secret-key-change-me-1234567890
+      CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:3000,http://localhost
+      SEED_ADMIN_ENABLED: "true"
+      SEED_ADMIN_EMAIL: admin@taskflow.local
+      SEED_ADMIN_PASSWORD: Admin123!
+      FLYWAY_ENABLED: "true"
+      JPA_DDL_AUTO: validate
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  realtime-service:
+    build: ./realtime-service
+    environment:
+      PORT: 4000
+      REDIS_URL: redis://redis:6379
+      REALTIME_CHANNEL: taskflow-events
+      JWT_SECRET: taskflow-dev-secret-key-change-me-1234567890
+      CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:3000,http://localhost
+    ports:
+      - "4000:4000"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api
+        VITE_REALTIME_URL: ""
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+      - realtime-service
+
+volumes:
+  taskflow_mysql:

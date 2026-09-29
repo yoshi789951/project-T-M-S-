@@ -1,0 +1,507 @@
+{
+  "info": {
+    "name": "TaskFlow Full Stack API",
+    "description": "JWT-authenticated TaskFlow API collection. Sign in first; the response token is stored automatically in collection variable {{token}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "projectId",
+      "value": "1"
+    },
+    {
+      "key": "taskId",
+      "value": "1"
+    },
+    {
+      "key": "planId",
+      "value": "1"
+    },
+    {
+      "key": "planItemId",
+      "value": "1"
+    },
+    {
+      "key": "reminderId",
+      "value": "1"
+    },
+    {
+      "key": "userId",
+      "value": "2"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Sign in admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/signin",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@taskflow.local\",\n  \"password\": \"Admin123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Signin succeeded', function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { const data = pm.response.json(); if (data.token) pm.collectionVariables.set('token', data.token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sign up user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/signup",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Student User\",\n  \"email\": \"student@example.com\",\n  \"password\": \"Password123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Current user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "List projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/projects"
+          }
+        },
+        {
+          "name": "Create project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/projects",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TaskFlow Project\",\n  \"description\": \"Full-stack project\",\n  \"status\": \"ACTIVE\",\n  \"color\": \"#2563eb\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update project",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/projects/{{projectId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TaskFlow Project\",\n  \"description\": \"Updated description\",\n  \"status\": \"ACTIVE\",\n  \"color\": \"#24d3c8\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get project",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/projects/{{projectId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "List tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tasks?projectId={{projectId}}"
+          }
+        },
+        {
+          "name": "My tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tasks/mine"
+          }
+        },
+        {
+          "name": "List tags",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tags"
+          }
+        },
+        {
+          "name": "Create task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/tasks",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Build JWT backend\",\n  \"description\": \"Connect React frontend to Spring Boot\",\n  \"projectId\": 1,\n  \"assigneeId\": null,\n  \"priority\": \"HIGH\",\n  \"status\": \"TODO\",\n  \"dueDate\": null,\n  \"estimatedHours\": 6,\n  \"plannedStartAt\": null,\n  \"plannedEndAt\": null,\n  \"content\": \"Acceptance criteria and technical notes\",\n  \"tagIds\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Change task status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/tasks/{{taskId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_PROGRESS\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Task comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tasks/{{taskId}}/comments"
+          }
+        },
+        {
+          "name": "Add task comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/tasks/{{taskId}}/comments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"Implementation started.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Task activity",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tasks/{{taskId}}/activity"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Planning",
+      "item": [
+        {
+          "name": "List plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/plans"
+          }
+        },
+        {
+          "name": "Create plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/plans",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Release plan\",\n  \"description\": \"Plan the release\",\n  \"projectId\": null,\n  \"status\": \"ACTIVE\",\n  \"priority\": \"HIGH\",\n  \"startDate\": \"2026-09-29\",\n  \"endDate\": \"2026-10-05\",\n  \"progressPercent\": 20\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update plan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/plans/{{planId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Release plan\",\n  \"description\": \"Updated release plan\",\n  \"projectId\": null,\n  \"status\": \"ACTIVE\",\n  \"priority\": \"HIGH\",\n  \"startDate\": \"2026-09-29\",\n  \"endDate\": \"2026-10-05\",\n  \"progressPercent\": 35\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "List plan items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/plans/{{planId}}/items"
+          }
+        },
+        {
+          "name": "Create plan item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/plans/{{planId}}/items",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Validate JWT flow\",\n  \"description\": \"Run API security checks\",\n  \"taskId\": null,\n  \"status\": \"TODO\",\n  \"plannedStartAt\": null,\n  \"plannedEndAt\": null,\n  \"sortOrder\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update plan item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/plans/{{planId}}/items/{{planItemId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Validate JWT flow\",\n  \"description\": \"Run API security checks\",\n  \"taskId\": null,\n  \"status\": \"DONE\",\n  \"plannedStartAt\": null,\n  \"plannedEndAt\": null,\n  \"sortOrder\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reminders",
+      "item": [
+        {
+          "name": "List reminders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/reminders"
+          }
+        },
+        {
+          "name": "Upcoming reminders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/reminders/upcoming"
+          }
+        },
+        {
+          "name": "Create reminder",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/reminders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Review plan\",\n  \"message\": \"Check planning progress\",\n  \"remindAt\": \"2026-10-01T10:00:00\",\n  \"taskId\": null,\n  \"planId\": null,\n  \"repeatType\": \"NONE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Change reminder status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/reminders/{{reminderId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"DISMISSED\",\n  \"read\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/admin/users"
+          }
+        },
+        {
+          "name": "Promote user to manager",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/admin/users/{{userId}}/role?role=MANAGER"
+          }
+        },
+        {
+          "name": "Suspend user",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/admin/users/{{userId}}/active?active=false"
+          }
+        }
+      ]
+    }
+  ]
+}

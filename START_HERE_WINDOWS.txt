@@ -1,0 +1,51 @@
+TASKFLOW FULL STACK JWT - START HERE
+====================================
+
+This ZIP contains:
+- frontend/
+- backend/
+- realtime-service/
+- MySQL configuration
+- Redis configuration
+- Docker Compose
+- Postman collection
+- JWT implementation guide
+- validation report
+
+EASIEST RUN
+-----------
+1. Install Docker Desktop.
+2. Extract this ZIP.
+3. Open the extracted root folder in VS Code/Cursor.
+4. Run:
+
+   docker compose up --build
+
+5. Open:
+   http://localhost:5173
+
+The frontend is served by Nginx and proxies:
+- /api -> Spring Boot backend
+- /socket.io -> realtime service
+
+Development ADMIN login:
+Email:    admin@taskflow.local
+Password: Admin123!
+
+Swagger:
+http://localhost:8080/swagger-ui.html
+
+The backend Docker build runs `mvn test` before producing the Spring Boot JAR.
+
+LIBRARIES / REQUIREMENTS
+------------------------
+Read:
+  requirements\LIBRARIES_AND_SOFTWARE.md
+  requirements\TASKFLOW_REQUIREMENTS.md
+  database\README.md
+
+For a non-Docker development installation you can run:
+  INSTALL_LIBRARIES_WINDOWS.bat
+
+Database migrations are automatic through Flyway when the Spring Boot backend starts.
+Hibernate validates the resulting MySQL schema.
